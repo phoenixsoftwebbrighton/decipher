@@ -1,0 +1,29 @@
+[
+  {
+    "robot_error": "Permission denied (publickey,password)",
+    "human_truth": "The system thinks you are trying to log in as your Mac user instead of the Ubuntu user.",
+    "fix_steps": [
+      "Check your Ansible inventory file.",
+      "Ensure the 'ansible_user' is set to your Ubuntu username.",
+      "Test the connection with: ssh username@ip_address"
+    ]
+  },
+  {
+    "robot_error": "Colons in unquoted values must be followed by a non-space character",
+    "human_truth": "You have a hidden space immediately after a colon in your YAML file.",
+    "fix_steps": [
+      "Find the line mentioned in the error.",
+      "Look for a colon (:).",
+      "Ensure there is exactly one space AFTER the colon, and NO space before it."
+    ]
+  },
+  {
+    "robot_error": "NameError: name",
+    "human_truth": "You are trying to use a command or a function that hasn't been defined yet.",
+    "fix_steps": [
+      "Check the spelling of the name.",
+      "Make sure the function is defined ABOVE the line where you call it.",
+      "Ensure the variable is actually created before you try to use it."
+    ]
+  }
+]
