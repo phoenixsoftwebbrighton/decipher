@@ -1,22 +1,26 @@
 # 🔍 Decipher
 
-**Plain English translations for cryptic error messages — built for neurodivergent developers.**
+---
+
+> **"Built for the developers who kept being told the problem was them. It wasn't."**
+
+For too long, tech tools have been built by people without lived experience of what it feels like to be neurodivergent and lost in a wall of error messages. Decipher exists because that changes now. If you've ever stared at a terminal and felt completely alone — this was built for you, by someone who knows exactly how that feels.
 
 ---
 
 ## What is Decipher?
 
-When you're learning to code or manage servers, error messages are written for machines — not humans. They're cryptic, cold, and often point at the wrong thing entirely.
+Error messages are written for machines — not humans. They're cryptic, cold, and often point at the wrong thing entirely.
 
 Decipher translates those robot messages into plain English. It tells you what the error actually means, and gives you clear step-by-step instructions to fix it.
 
-No jargon. No assumptions. No making you feel stupid.
+**No jargon. No assumptions. No making you feel stupid.**
 
 ---
 
 ## Who is it for?
 
-Decipher was built by a neurodivergent developer, for neurodivergent developers — and anyone else who's ever stared at an error message and felt completely lost.
+Decipher was built by a neurodivergent developer, for neurodivergent developers — and anyone else who's ever felt left behind by tools that weren't designed for their brain.
 
 It's especially useful if you:
 - Are just getting started with Linux, Docker, Ansible, or Git
@@ -89,7 +93,7 @@ If you paste an error it hasn't seen before, Decipher asks you two questions:
 1. What were you trying to do when this happened?
 2. Which tool is this error from?
 
-Your answer gets saved to `unknown_errors.json` — a queue of new errors waiting to be added to the database. Every submission makes Decipher smarter for the next person.
+Your answer gets saved to a queue of new errors waiting to be added to the database. Every submission makes Decipher smarter for the next person.
 
 ---
 
@@ -146,8 +150,8 @@ If you want to add translations directly, open `errors.json` and follow the exis
 
 Ash Baguley — Brighton, UK
 
-Built from 3 years of hitting walls, getting frustrated, figuring it out, and deciding that nobody else should have to feel as lost as I did.
+Built from 3 years of hitting walls, getting frustrated, figuring it out, and deciding that nobody else should have to feel as lost as I did. If this tool helps even one person feel less alone in front of a terminal — it was worth every hour.
 
 ---
 
-*Decipher is part of a wider project to build tech tools for neurodivergent people who keep being told the problem is them. It isn't.*
+*Decipher is part of a wider project to build tech tools for neurodivergent people. Finally, built by someone with lived experience.*
