@@ -1,29 +1,132 @@
 [
   {
+    "id": "ssh_wrong_user",
     "robot_error": "Permission denied (publickey,password)",
-    "human_truth": "The system thinks you are trying to log in as your Mac user instead of the Ubuntu user.",
+    "human_truth": "The system is trying to log in with the wrong username — it's using your Mac's username instead of your server username.",
     "fix_steps": [
-      "Check your Ansible inventory file.",
-      "Ensure the 'ansible_user' is set to your Ubuntu username.",
-      "Test the connection with: ssh username@ip_address"
-    ]
+      "Check what username your server expects (e.g., 'ubuntu' or 'phoenix')",
+      "Add 'ansible_user=YOUR_SERVER_USERNAME' to your inventory file next to the IP address",
+      "Or use the -u flag when running ansible: ansible-playbook playbook.yml -u ubuntu"
+    ],
+    "tags": ["ssh", "ansible", "permission"]
   },
   {
+    "id": "ansible_inventory_format",
+    "robot_error": "Expected key=value host variable assignment",
+    "human_truth": "Your inventory file has the IP address in the wrong place — it needs to come before the username setting, not after.",
+    "fix_steps": [
+      "Open your inventory file",
+      "Find the line causing the error",
+      "Make sure it follows this format: 192.168.1.1 ansible_user=ubuntu",
+      "The IP address always comes first, then the settings after it"
+    ],
+    "tags": ["ansible", "inventory", "yaml"]
+  },
+  {
+    "id": "ansible_sudo_missing",
+    "robot_error": "Missing sudo password",
+    "human_truth": "Your playbook is trying to run as admin (become: yes) but doesn't have the password to do that.",
+    "fix_steps": [
+      "Add the -K flag when running your playbook: ansible-playbook playbook.yml -K",
+      "It will then ask you for your sudo password once",
+      "Or for a permanent fix: add your user to sudoers with NOPASSWD (ask for help with this step)"
+    ],
+    "tags": ["ansible", "sudo", "permission"]
+  },
+  {
+    "id": "yaml_colon_space",
     "robot_error": "Colons in unquoted values must be followed by a non-space character",
-    "human_truth": "You have a hidden space immediately after a colon in your YAML file.",
+    "human_truth": "There's a hidden extra space after a colon in your YAML file — YAML is very fussy about spaces.",
     "fix_steps": [
-      "Find the line mentioned in the error.",
-      "Look for a colon (:).",
-      "Ensure there is exactly one space AFTER the colon, and NO space before it."
-    ]
+      "Look at the line and column number in the error (e.g., line 8, column 10)",
+      "Go to that exact line in your file",
+      "Look for a colon followed by a space where there shouldn't be one",
+      "Remove the extra space — or wrap the value in quotes if it needs a colon in it"
+    ],
+    "tags": ["yaml", "syntax", "ansible"]
   },
   {
-    "robot_error": "NameError: name",
-    "human_truth": "You are trying to use a command or a function that hasn't been defined yet.",
+    "id": "yaml_indentation",
+    "robot_error": "did not find expected key",
+    "human_truth": "Something in your YAML file is indented at the wrong level — it's like a bullet point that's been pushed too far to the right.",
     "fix_steps": [
-      "Check the spelling of the name.",
-      "Make sure the function is defined ABOVE the line where you call it.",
-      "Ensure the variable is actually created before you try to use it."
-    ]
+      "Find the line number mentioned in the error",
+      "Check that all your tasks (lines starting with - name:) are at the same indentation level",
+      "Use spaces not tabs — YAML does not accept tab characters",
+      "Each level of indentation should be exactly 2 spaces"
+    ],
+    "tags": ["yaml", "indentation", "ansible"]
+  },
+  {
+    "id": "docker_wrong_parameter",
+    "robot_error": "Unsupported parameters for (docker_container) module: environment",
+    "human_truth": "You used a word from Docker Compose (environment:) inside an Ansible task — Ansible uses a different word for the same thing.",
+    "fix_steps": [
+      "Find 'environment:' in your Ansible task",
+      "Change it to 'env:' instead",
+      "These two words mean the same thing but Ansible only accepts 'env:'"
+    ],
+    "tags": ["ansible", "docker", "module"]
+  },
+  {
+    "id": "disk_full",
+    "robot_error": "Internal Server Error",
+    "human_truth": "Your disk might be completely full — when that happens, apps crash with vague errors instead of telling you the real problem.",
+    "fix_steps": [
+      "Run: df -h",
+      "Look for any line showing 100% or close to it",
+      "If your disk is full: run 'docker system prune -f' to remove unused Docker files",
+      "If that doesn't help, you may need to expand your disk or delete old files"
+    ],
+    "tags": ["disk", "docker", "server"]
+  },
+  {
+    "id": "ssh_keygen_passphrase",
+    "robot_error": "Enter passphrase (empty for no passphrase)",
+    "human_truth": "This is asking if you want to add a password to your SSH key. For automation to work, you must leave this blank.",
+    "fix_steps": [
+      "⚠️  STOP — do not type a password here",
+      "Just press ENTER to leave it blank",
+      "Press ENTER again to confirm",
+      "If you already added a passphrase, you will need to regenerate your key without one"
+    ],
+    "tags": ["ssh", "keygen", "automation"]
+  },
+  {
+    "id": "lvm_disk_not_expanded",
+    "robot_error": "No space left on device",
+    "human_truth": "Your VM was given more disk space but Ubuntu hasn't been told to use it yet. The space exists but is locked away.",
+    "fix_steps": [
+      "Run: df -h to check current disk usage",
+      "Run: lsblk to see all available disk space",
+      "Run: sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv",
+      "Then run: sudo resize2fs /dev/ubuntu-vg/ubuntu-lv",
+      "Run df -h again to confirm the space is now available"
+    ],
+    "tags": ["disk", "lvm", "ubuntu", "vm"]
+  },
+  {
+    "id": "connection_refused",
+    "robot_error": "Connection refused",
+    "human_truth": "The server you are trying to reach is not listening for connections — either the service isn't running, or you have the wrong port number.",
+    "fix_steps": [
+      "Check the service is actually running: sudo systemctl status SERVICE_NAME",
+      "Check you have the right port number",
+      "Check your firewall isn't blocking the connection: sudo ufw status",
+      "Try restarting the service: sudo systemctl restart SERVICE_NAME"
+    ],
+    "tags": ["network", "ssh", "docker", "connection"]
+  },
+  {
+    "id": "name_not_known",
+    "robot_error": "Name or service not known",
+    "human_truth": "Your computer can't find the address you gave it — either the hostname doesn't exist, or DNS isn't working.",
+    "fix_steps": [
+      "Check you haven't made a typo in the hostname",
+      "Try using the IP address instead of the hostname to test",
+      "Check your DNS is working: ping 8.8.8.8",
+      "If using a custom hostname like 'ansible-lab.orb.local', make sure OrbStack is running"
+    ],
+    "tags": ["dns", "network", "hostname"]
   }
 ]
