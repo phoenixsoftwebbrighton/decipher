@@ -128,5 +128,42 @@
       "If using a custom hostname like 'ansible-lab.orb.local', make sure OrbStack is running"
     ],
     "tags": ["dns", "network", "hostname"]
+  },
+  {
+    "id": "git_repo_not_found",
+    "robot_error": "fatal: repository not found",
+    "human_truth": "Git can't find the repository you're pointing at — either the URL is wrong, the repo doesn't exist yet, or you don't have permission to access it.",
+    "fix_steps": [
+      "Check the URL is correct — look for typos in the username or repo name",
+      "Make sure the repository actually exists — log into Gitea or GitHub and check",
+      "Check you're using the right username — run: git remote -v to see the current URL",
+      "If the URL is wrong, fix it with: git remote set-url origin YOUR_CORRECT_URL",
+      "If the repo doesn't exist yet, create it first then push"
+    ],
+    "tags": ["git", "gitea", "github", "remote"]
+  },
+  {
+    "id": "git_wrong_username",
+    "robot_error": "Authentication failed",
+    "human_truth": "Git tried to log in but the username or password was wrong — or your Git config is using a different username than your account.",
+    "fix_steps": [
+      "Check your Git config username: git config --global user.name",
+      "Update it if wrong: git config --global user.name 'YOUR_USERNAME'",
+      "Update your email too: git config --global user.email 'YOUR_EMAIL'",
+      "Try pushing again and enter your correct password when prompted",
+      "If it still fails, check the remote URL matches your actual username: git remote -v"
+    ],
+    "tags": ["git", "authentication", "gitea", "github"]
+  },
+  {
+    "id": "git_src_refspec",
+    "robot_error": "src refspec main does not match any",
+    "human_truth": "Git is trying to push a branch called 'main' but it doesn't exist yet — you need to make your first commit before you can push.",
+    "fix_steps": [
+      "Make sure you have at least one commit: git add -A && git commit -m 'first commit'",
+      "Then push with: git push origin main",
+      "If your branch is called 'master' instead of 'main', use: git push origin master"
+    ],
+    "tags": ["git", "push", "branch"]
   }
 ]
