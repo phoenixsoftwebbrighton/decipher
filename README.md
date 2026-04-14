@@ -4,6 +4,8 @@
 
 > **"Built for the developers who kept being told the problem was them. It wasn't."**
 
+> **Decipher is part of a wider project to build tech tools for neurodivergent people. Finally, built by someone with lived experience.**
+
 For too long, tech tools have been built by people without lived experience of what it feels like to be neurodivergent and lost in a wall of error messages. Decipher exists because that changes now. If you've ever stared at a terminal and felt completely alone — this was built for you, by someone who knows exactly how that feels.
 
 ---
@@ -151,7 +153,3 @@ If you want to add translations directly, open `errors.json` and follow the exis
 Ash Baguley — Brighton, UK
 
 Built from 3 years of hitting walls, getting frustrated, figuring it out, and deciding that nobody else should have to feel as lost as I did. If this tool helps even one person feel less alone in front of a terminal — it was worth every hour.
-
----
-
-*Decipher is part of a wider project to build tech tools for neurodivergent people. Finally, built by someone with lived experience.*
