@@ -165,5 +165,53 @@
       "If your branch is called 'master' instead of 'main', use: git push origin master"
     ],
     "tags": ["git", "push", "branch"]
+  },
+  {
+    "id": "git_push_rejected_fetch_first",
+    "robot_error": "rejected] main -> main (fetch first)",
+    "human_truth": "Someone else (or another machine) pushed changes to the repo while you were working. Your copy is behind — you need to grab those changes before you can push yours.",
+    "fix_steps": [
+      "Run: git pull --rebase origin main",
+      "This grabs the latest changes and puts your work on top",
+      "Then push again: git push origin main",
+      "If you're using GitSpeak, the 'save' command now handles this automatically"
+    ],
+    "tags": ["git", "push", "rejected", "gitea"]
+  },
+  {
+    "id": "git_divergent_branches",
+    "robot_error": "fatal: Need to specify how to reconcile divergent branches",
+    "human_truth": "Your local copy and the remote copy have both changed independently — Git doesn't know which version to trust and needs you to decide.",
+    "fix_steps": [
+      "Run: git pull --rebase origin main",
+      "Rebase keeps your history clean and is the recommended option",
+      "If GitSpeak's pull command is failing, this is why — update GitSpeak to the latest version",
+      "If you get conflicts after rebasing, open the files marked as conflicted and choose which changes to keep"
+    ],
+    "tags": ["git", "pull", "rebase", "merge"]
+  },
+  {
+    "id": "git_nothing_to_commit",
+    "robot_error": "nothing to commit, working tree clean",
+    "human_truth": "There's nothing new to save — all your files are already committed. This isn't an error, it just means everything is up to date locally.",
+    "fix_steps": [
+      "This is not actually an error — your files are already saved",
+      "If you're trying to push to remote, run: git push origin main",
+      "If you expected changes to be here, check you saved your files in your editor first",
+      "Run: git status to see exactly what state everything is in"
+    ],
+    "tags": ["git", "commit", "status"]
+  },
+  {
+    "id": "git_connection_reset",
+    "robot_error": "Recv failure: Connection reset by peer",
+    "human_truth": "The connection to your Git server was suddenly cut off mid-transfer — usually because the server went down or restarted while you were pushing.",
+    "fix_steps": [
+      "Check your Gitea server is still running: docker ps | grep gitea",
+      "If OrbStack restarted, wait 30 seconds and try again",
+      "Try pushing again: git push origin main",
+      "If it keeps happening, check if OrbStack or Docker has crashed"
+    ],
+    "tags": ["git", "gitea", "connection", "orbstack"]
   }
 ]
