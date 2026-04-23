@@ -1,155 +1,104 @@
 # 🔍 Decipher
 
----
+> **Errors in plain English.**
 
-> **"Built for the developers who kept being told the problem was them. It wasn't."**
+Part of the [ADHDeveloper Toolkit](https://github.com/phoenixsoftwebbrighton/adhddeveloper-toolkit) — CLI tools for developers whose brains work differently.
 
-> **Decipher is part of a wider project to build tech tools for neurodivergent people. Finally, built by someone with lived experience.**
-
-For too long, tech tools have been built by people without lived experience of what it feels like to be neurodivergent and lost in a wall of error messages. Decipher exists because that changes now. If you've ever stared at a terminal and felt completely alone — this was built for you, by someone who knows exactly how that feels.
-
----
-
-## What is Decipher?
-
-Error messages are written for machines — not humans. They're cryptic, cold, and often point at the wrong thing entirely.
-
-Decipher translates those robot messages into plain English. It tells you what the error actually means, and gives you clear step-by-step instructions to fix it.
-
-**No jargon. No assumptions. No making you feel stupid.**
+[![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-amber.svg)](https://www.python.org/downloads/)
 
 ---
 
-## Who is it for?
+## 🤔 What is it?
 
-Decipher was built by a neurodivergent developer, for neurodivergent developers — and anyone else who's ever felt left behind by tools that weren't designed for their brain.
+You get an error. It's written in machine language. You have no idea what it means.
 
-It's especially useful if you:
-- Are just getting started with Linux, Docker, Ansible, or Git
-- Have ADHD or Autism and find walls of technical text overwhelming
-- Keep hitting the same errors and can't remember how you fixed them last time
-- Want a tool that treats you like a human being
+Decipher translates it into plain English — what it means, why it happened, and exactly how to fix it. No Stack Overflow required.
 
 ---
 
-## Current Error Database
-
-Decipher currently knows how to translate **14 errors** across the following categories:
-
-| Category | Errors covered |
-|---|---|
-| SSH | Wrong username, passphrase traps, keygen mistakes |
-| Ansible | Inventory format, sudo issues, wrong module parameters |
-| YAML | Colon spacing, indentation problems |
-| Docker | Wrong parameter names |
-| Git | Repository not found, authentication failed, refspec errors |
-| Disk | Full disk, LVM not expanded, no space left |
-| Network | Connection refused, hostname not found |
-
-Every error entry contains:
-- **The robot error** — exactly what the terminal shows you
-- **The human truth** — what it actually means in plain English
-- **Fix steps** — numbered, clear, no assumptions
-
----
-
-## How to run it
-
-**Requirements:** Python 3 and the `rich` library
+## ⚡ Quick Start
 
 ```bash
+# Install dependency
 pip install rich
+
+# Run Decipher
+python3 decipher.py
 ```
 
-**Run Decipher:**
+Add an alias to your shell for instant access:
+
 ```bash
-cd decipher
-python3 translator.py
-```
+echo 'alias decipher="python3 ~/decipher/decipher.py"' >> ~/.zshrc
+source ~/.zshrc
 
-**Paste your error when prompted:**
-```
-Paste error here: Permission denied (publickey,password)
-```
-
-**Decipher responds:**
-```
-✅ Translation Found
-
-What this means:
-  The system is trying to log in with the wrong username —
-  it's using your Mac's username instead of your server username.
-
-How to fix it:
-  1. Check what username your server expects (e.g. ubuntu or phoenix)
-  2. Add ansible_user=YOUR_USERNAME to your inventory file
-  3. Or use the -u flag: ansible-playbook playbook.yml -u ubuntu
+# Now just type:
+decipher
 ```
 
 ---
 
-## What happens when Decipher doesn't recognise an error?
+## 🛠️ How it works
 
-If you paste an error it hasn't seen before, Decipher asks you two questions:
+```bash
+$ decipher
 
-1. What were you trying to do when this happened?
-2. Which tool is this error from?
+Paste error here: Permission denied (publickey)
 
-Your answer gets saved to a queue of new errors waiting to be added to the database. Every submission makes Decipher smarter for the next person.
-
----
-
-## Project structure
-
-```
-decipher/
-├── translator.py          ← the main app
-├── errors.json            ← the error database (human translations live here)
-├── unknown_errors.json    ← queue of unrecognised errors submitted by users
-├── config.json            ← user settings (local vs cloud mode)
-├── PAIN_POINTS.md         ← the real problems that inspired this tool
-├── DECIPHER-IDEAS.md      ← future features and ideas log
-└── README.md              ← you are here
+╭─── 🔍 Decipher knows this one ───╮
+│ What this means:                  │
+│   Wrong username — the system is  │
+│   trying to log in as the wrong   │
+│   person.                         │
+│                                   │
+│ How to fix it:                    │
+│   1. Check your SSH config        │
+│   2. Specify the right username   │
+│   3. Try: ssh -u YOUR_USERNAME    │
+╰───────────────────────────────────╯
 ```
 
 ---
 
-## Roadmap
+## 🌍 Community Database
 
-- [ ] Web interface — so anyone can use it without touching a terminal
-- [ ] Screenshot submission — paste a screenshot, Decipher reads the error from the image
-- [ ] Submission threshold notifications — get pinged when enough new errors are in the queue
-- [ ] AI-assisted translation — use local AI (Ollama) to auto-generate translations for unknown errors
-- [ ] Community database — submissions from all users feed one shared database
-- [ ] Health check — scan disk, RAM and services before diagnosing software errors
-- [ ] Error severity ratings — 🟢 Minor / 🟡 Medium / 🔴 Critical
+When Decipher doesn't recognise an error, it asks if you want to submit it to the community queue. Every submission makes Decipher smarter for the next person.
 
----
-
-## Contributing
-
-Found an error that Decipher doesn't know yet? Just run the tool and it'll ask you to submit it. That's all you need to do.
-
-If you want to add translations directly, open `errors.json` and follow the existing format:
-
-```json
-{
-  "id": "unique_id",
-  "robot_error": "exact text from the terminal",
-  "human_truth": "what it actually means in plain English",
-  "fix_steps": [
-    "Step 1",
-    "Step 2",
-    "Step 3"
-  ],
-  "tags": ["category", "tool"]
-}
+```
+✅ Known error    → instant translation
+❓ Unknown error  → submit to community queue
+📬 Submitted      → helps the next developer
 ```
 
 ---
 
-## Built by
+## 🔧 Errors Currently Covered
 
-Ash Baguley — Brighton, UK
+- SSH connection errors
+- Git errors (push, pull, auth, repo not found)
+- Ansible/YAML errors
+- Docker errors
+- Disk space errors
+- DNS/network errors
+- Python errors
+- ...and growing every day
 
-Built from 3 years of hitting walls, getting frustrated, figuring it out, and deciding that nobody else should have to feel as lost as I did. If this tool helps even one person feel less alone in front of a terminal — it was worth every hour.
+---
+
+## 🎨 Design Philosophy
+
+- **No jargon** — every translation in plain English
+- **Community powered** — gets smarter with every user
+- **Works offline** — local database, nothing phones home
+- **Integrated with GitSpeak** — errors translated automatically
+
+---
+
+## 📄 License
+
+MIT — free forever.
+
+---
+
+*Part of the ADHDeveloper Toolkit — made for brains that work differently* 🧠
