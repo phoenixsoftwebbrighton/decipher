@@ -29,7 +29,7 @@
     "fix_steps": [
       "Add the -K flag when running your playbook: ansible-playbook playbook.yml -K",
       "It will then ask you for your sudo password once",
-      "Or for a permanent fix: add your user to sudoers with NOPASSWD (ask for help with this step)"
+      "Or for a permanent fix: add your user to sudoers with NOPASSWD"
     ],
     "tags": ["ansible", "sudo", "permission"]
   },
@@ -85,7 +85,7 @@
     "robot_error": "Enter passphrase (empty for no passphrase)",
     "human_truth": "This is asking if you want to add a password to your SSH key. For automation to work, you must leave this blank.",
     "fix_steps": [
-      "⚠️  STOP — do not type a password here",
+      "STOP — do not type a password here",
       "Just press ENTER to leave it blank",
       "Press ENTER again to confirm",
       "If you already added a passphrase, you will need to regenerate your key without one"
@@ -125,7 +125,7 @@
       "Check you haven't made a typo in the hostname",
       "Try using the IP address instead of the hostname to test",
       "Check your DNS is working: ping 8.8.8.8",
-      "If using a custom hostname like 'ansible-lab.orb.local', make sure OrbStack is running"
+      "If using a custom hostname, make sure your DNS server is running"
     ],
     "tags": ["dns", "network", "hostname"]
   },
@@ -174,7 +174,7 @@
       "Run: git pull --rebase origin main",
       "This grabs the latest changes and puts your work on top",
       "Then push again: git push origin main",
-      "If you're using GitSpeak, the 'save' command now handles this automatically"
+      "If you're using GitSpeak, the 'save' command handles this automatically"
     ],
     "tags": ["git", "push", "rejected", "gitea"]
   },
@@ -185,7 +185,6 @@
     "fix_steps": [
       "Run: git pull --rebase origin main",
       "Rebase keeps your history clean and is the recommended option",
-      "If GitSpeak's pull command is failing, this is why — update GitSpeak to the latest version",
       "If you get conflicts after rebasing, open the files marked as conflicted and choose which changes to keep"
     ],
     "tags": ["git", "pull", "rebase", "merge"]
@@ -208,10 +207,300 @@
     "human_truth": "The connection to your Git server was suddenly cut off mid-transfer — usually because the server went down or restarted while you were pushing.",
     "fix_steps": [
       "Check your Gitea server is still running: docker ps | grep gitea",
-      "If OrbStack restarted, wait 30 seconds and try again",
+      "Wait 30 seconds and try again",
       "Try pushing again: git push origin main",
       "If it keeps happening, check if OrbStack or Docker has crashed"
     ],
-    "tags": ["git", "gitea", "connection", "orbstack"]
+    "tags": ["git", "gitea", "connection"]
+  },
+  {
+    "id": "docker_not_running",
+    "robot_error": "Cannot connect to the Docker daemon",
+    "human_truth": "Docker isn't running on your machine. It needs to be started before you can use any Docker commands.",
+    "fix_steps": [
+      "On Mac: open OrbStack or Docker Desktop from your Applications folder",
+      "On Linux: run sudo systemctl start docker",
+      "Wait 10-15 seconds for it to fully start",
+      "Then try your Docker command again"
+    ],
+    "tags": ["docker", "daemon"]
+  },
+  {
+    "id": "docker_port_in_use",
+    "robot_error": "Bind for 0.0.0.0:80 failed: port is already allocated",
+    "human_truth": "Something else on your machine is already using that port. Two things can't share the same port at the same time.",
+    "fix_steps": [
+      "Find what's using the port: sudo ss -tlnp | grep :80 (replace 80 with your port)",
+      "Either stop the conflicting service, or change your container to use a different port",
+      "To change the port in docker-compose, edit the ports section: '8081:80' instead of '80:80'",
+      "Then restart your container: docker compose down && docker compose up -d"
+    ],
+    "tags": ["docker", "port", "network"]
+  },
+  {
+    "id": "docker_image_not_found",
+    "robot_error": "Unable to find image locally",
+    "human_truth": "Docker is trying to use an image that hasn't been downloaded yet. It needs to pull it from the internet first.",
+    "fix_steps": [
+      "This usually fixes itself — Docker will automatically download the image",
+      "If it fails, check your internet connection",
+      "Try pulling it manually: docker pull IMAGE_NAME",
+      "If the image name is wrong, check the exact name on hub.docker.com"
+    ],
+    "tags": ["docker", "image", "pull"]
+  },
+  {
+    "id": "docker_compose_not_found",
+    "robot_error": "docker: 'compose' is not a docker command",
+    "human_truth": "You're using an older version of Docker that needs a hyphen — it's 'docker-compose' not 'docker compose'.",
+    "fix_steps": [
+      "Try using 'docker-compose' instead of 'docker compose'",
+      "Or update Docker to a newer version that supports the newer syntax",
+      "On Mac: update OrbStack or Docker Desktop",
+      "On Linux: sudo apt update && sudo apt upgrade docker-ce"
+    ],
+    "tags": ["docker", "compose", "version"]
+  },
+  {
+    "id": "pip_not_found",
+    "robot_error": "pip: command not found",
+    "human_truth": "pip (Python's package installer) isn't installed or isn't on your PATH. You need it to install Python packages.",
+    "fix_steps": [
+      "Try pip3 instead of pip",
+      "On Mac: brew install python3 (includes pip)",
+      "On Ubuntu: sudo apt install python3-pip",
+      "After installing, close and reopen your terminal"
+    ],
+    "tags": ["python", "pip", "install"]
+  },
+  {
+    "id": "python_module_not_found",
+    "robot_error": "ModuleNotFoundError: No module named",
+    "human_truth": "Python is trying to use a package that hasn't been installed yet. Like trying to use an app you haven't downloaded.",
+    "fix_steps": [
+      "Install the missing module with pip: pip install MODULE_NAME",
+      "Replace MODULE_NAME with whatever name appeared in the error",
+      "If pip isn't found, try: pip3 install MODULE_NAME",
+      "After installing, try running your script again"
+    ],
+    "tags": ["python", "module", "import"]
+  },
+  {
+    "id": "python_syntax_error",
+    "robot_error": "SyntaxError: invalid syntax",
+    "human_truth": "Python found something in your code it doesn't understand — usually a missing bracket, quote, or colon.",
+    "fix_steps": [
+      "Go to the line number shown in the error",
+      "Look for: missing closing bracket ), ] or }",
+      "Missing colon at the end of a def, if, for, or while line",
+      "A quote that was opened but never closed",
+      "Something spelled wrong that Python doesn't recognise as a keyword"
+    ],
+    "tags": ["python", "syntax", "code"]
+  },
+  {
+    "id": "python_indentation_error",
+    "robot_error": "IndentationError: unexpected indent",
+    "human_truth": "Python is very strict about spacing — a line has been indented (pushed to the right) when it shouldn't be, or not indented when it should be.",
+    "fix_steps": [
+      "Go to the line number shown in the error",
+      "Check that the indentation (spaces at the start) matches the lines around it",
+      "Make sure you're using spaces, not tabs — Python prefers spaces",
+      "Each level of indentation should be 4 spaces"
+    ],
+    "tags": ["python", "indentation", "code"]
+  },
+  {
+    "id": "permission_denied_file",
+    "robot_error": "Permission denied",
+    "human_truth": "You're trying to do something with a file or folder that your user account isn't allowed to do.",
+    "fix_steps": [
+      "Try adding 'sudo' before your command to run it as admin",
+      "If editing a file: sudo nano FILENAME",
+      "If running a script: sudo ./script.sh",
+      "Be careful with sudo — it has full access to your system"
+    ],
+    "tags": ["permission", "linux", "file"]
+  },
+  {
+    "id": "command_not_found",
+    "robot_error": "command not found",
+    "human_truth": "The command you typed doesn't exist on your system — either it's not installed, or the name is slightly wrong.",
+    "fix_steps": [
+      "Check for typos in the command name",
+      "If it's a tool you installed, try closing and reopening your terminal",
+      "If it's a new alias, run: source ~/.zshrc to reload your shell config",
+      "If the tool genuinely isn't installed, install it first"
+    ],
+    "tags": ["shell", "terminal", "command"]
+  },
+  {
+    "id": "apt_lock",
+    "robot_error": "Could not get lock /var/lib/apt/lists/lock",
+    "human_truth": "Another package installation is already running in the background. Two things can't install packages at the same time.",
+    "fix_steps": [
+      "Wait a few minutes and try again — a background update might be running",
+      "Find what's holding the lock: sudo lsof /var/lib/apt/lists/lock",
+      "If nothing is running, remove the lock file: sudo rm /var/lib/apt/lists/lock",
+      "Then try your apt command again"
+    ],
+    "tags": ["apt", "ubuntu", "package", "lock"]
+  },
+  {
+    "id": "apt_package_not_found",
+    "robot_error": "Unable to locate package",
+    "human_truth": "Ubuntu can't find the package you're trying to install — either it's in a different repository, the name is wrong, or you need to update your package list first.",
+    "fix_steps": [
+      "First update your package list: sudo apt update",
+      "Then try installing again: sudo apt install PACKAGE_NAME",
+      "Double-check the exact package name — try searching: apt search PACKAGE_NAME",
+      "If it's still not found, you may need to add the software's repository first"
+    ],
+    "tags": ["apt", "ubuntu", "package"]
+  },
+  {
+    "id": "ssh_host_key_changed",
+    "robot_error": "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED",
+    "human_truth": "The server you're connecting to has a different identity than what your computer remembers. This usually happens after reinstalling a server — but could occasionally indicate something suspicious.",
+    "fix_steps": [
+      "If you recently reinstalled or rebuilt the server, this is expected and safe to fix",
+      "Remove the old key: ssh-keygen -R HOSTNAME_OR_IP",
+      "Then connect again — it will ask you to accept the new key",
+      "Type 'yes' to accept and add the new key"
+    ],
+    "tags": ["ssh", "security", "host-key"]
+  },
+  {
+    "id": "ansible_host_unreachable",
+    "robot_error": "UNREACHABLE! Failed to connect to the host",
+    "human_truth": "Ansible can't connect to your server at all — the server might be off, the IP address might be wrong, or SSH might not be running.",
+    "fix_steps": [
+      "Check the server is actually running",
+      "Try connecting manually first: ssh username@IP_ADDRESS",
+      "Make sure the IP address in your inventory.yml is correct",
+      "Make sure SSH is installed on the server: sudo apt install openssh-server"
+    ],
+    "tags": ["ansible", "ssh", "connection", "unreachable"]
+  },
+  {
+    "id": "ansible_become_error",
+    "robot_error": "sudo: a password is required",
+    "human_truth": "Ansible needs admin access to run this task, but the server is asking for a password and Ansible doesn't have one to give.",
+    "fix_steps": [
+      "Run your playbook with the -K flag: ansible-playbook playbook.yml -K",
+      "It will ask for your sudo password once",
+      "For a permanent fix, set up passwordless sudo on the server",
+      "Run on the server: echo 'USERNAME ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/USERNAME"
+    ],
+    "tags": ["ansible", "sudo", "permission", "become"]
+  },
+  {
+    "id": "git_detached_head",
+    "robot_error": "HEAD detached at",
+    "human_truth": "You're in a special Git mode where you're looking at old code but not on any branch — changes you make here might get lost.",
+    "fix_steps": [
+      "To get back to normal: git checkout main",
+      "Or if your branch is called master: git checkout master",
+      "If you made changes you want to keep, create a new branch first: git checkout -b my-new-branch",
+      "Then commit your changes to that branch"
+    ],
+    "tags": ["git", "branch", "head"]
+  },
+  {
+    "id": "git_merge_conflict",
+    "robot_error": "CONFLICT (content): Merge conflict in",
+    "human_truth": "Two different versions of the same file were changed in different places and Git doesn't know which version to keep — it needs you to decide.",
+    "fix_steps": [
+      "Open the file mentioned in the error",
+      "Look for lines starting with <<<<<<< HEAD — that's your version",
+      "Lines after ======= are the other version",
+      "Lines ending with >>>>>>> are the end of the conflict",
+      "Delete the markers and keep the version you want (or combine both)",
+      "Then: git add FILENAME && git commit"
+    ],
+    "tags": ["git", "merge", "conflict"]
+  },
+  {
+    "id": "node_modules_not_found",
+    "robot_error": "Cannot find module",
+    "human_truth": "A JavaScript package your project needs hasn't been installed yet — like trying to run a recipe without the ingredients.",
+    "fix_steps": [
+      "Run: npm install (in the project folder)",
+      "Wait for it to finish downloading all the packages",
+      "Then try running your project again",
+      "If npm isn't found, install Node.js first from nodejs.org"
+    ],
+    "tags": ["node", "npm", "javascript", "module"]
+  },
+  {
+    "id": "eaddrinuse",
+    "robot_error": "EADDRINUSE: address already in use",
+    "human_truth": "The port your app is trying to use is already taken by another process — two apps can't share the same port.",
+    "fix_steps": [
+      "Find what's using the port: sudo lsof -i :PORT_NUMBER (replace PORT_NUMBER)",
+      "Either stop that process, or change your app to use a different port",
+      "To kill the process using the port: kill -9 PROCESS_ID",
+      "Or simply restart your computer to clear all port bindings"
+    ],
+    "tags": ["node", "port", "network", "javascript"]
+  },
+  {
+    "id": "curl_ssl_error",
+    "robot_error": "curl: (60) SSL certificate problem",
+    "human_truth": "The website you're trying to connect to has an SSL certificate problem — either it's expired, self-signed, or your system's certificate list is out of date.",
+    "fix_steps": [
+      "Update your system's certificate list: sudo apt update && sudo apt install ca-certificates",
+      "If it's a local self-hosted service with a self-signed certificate, add -k to your curl command (for testing only)",
+      "If it's a real website, the site may have an expired certificate — try again later",
+      "Never use -k in production — it disables security checks"
+    ],
+    "tags": ["curl", "ssl", "https", "certificate"]
+  },
+  {
+    "id": "systemd_service_failed",
+    "robot_error": "Failed to start service. Unit not found",
+    "human_truth": "You're trying to start or stop a service that doesn't exist on this system — either it's not installed or the name is spelled differently.",
+    "fix_steps": [
+      "Check the exact service name: systemctl list-units --type=service | grep SERVICE_NAME",
+      "Make sure the software is actually installed first",
+      "The service name might be slightly different — try tab completion: sudo systemctl start SERVICE and press TAB",
+      "Check if the service file exists: ls /etc/systemd/system/"
+    ],
+    "tags": ["systemd", "service", "linux"]
+  },
+  {
+    "id": "git_push_non_fast_forward",
+    "robot_error": "Updates were rejected because the tip of your current branch is behind",
+    "human_truth": "Your local branch is behind the remote — someone or something pushed changes you don't have yet. You need to catch up before pushing.",
+    "fix_steps": [
+      "Pull the latest changes first: git pull --rebase origin main",
+      "Then push again: git push origin main",
+      "If you're using GitSpeak, the 'save' command handles this automatically"
+    ],
+    "tags": ["git", "push", "branch", "rejected"]
+  },
+  {
+    "id": "docker_volume_in_use",
+    "robot_error": "volume is in use",
+    "human_truth": "You're trying to remove a Docker volume that still has a container using it — you need to stop the container first.",
+    "fix_steps": [
+      "Find which container is using it: docker ps -a",
+      "Stop the container: docker stop CONTAINER_NAME",
+      "Remove the container: docker rm CONTAINER_NAME",
+      "Now you can remove the volume: docker volume rm VOLUME_NAME"
+    ],
+    "tags": ["docker", "volume", "container"]
+  },
+  {
+    "id": "ansible_yaml_parse_error",
+    "robot_error": "ERROR! Syntax Error while loading YAML",
+    "human_truth": "Your YAML file has a formatting mistake — YAML is very strict about how things are laid out and something doesn't look right.",
+    "fix_steps": [
+      "Look at the line number in the error message",
+      "Common causes: tabs instead of spaces, missing colon, wrong indentation",
+      "Use a YAML validator to check your file — paste it into yamllint.com",
+      "Make sure all list items start with '- ' (dash space)"
+    ],
+    "tags": ["ansible", "yaml", "syntax"]
   }
 ]
